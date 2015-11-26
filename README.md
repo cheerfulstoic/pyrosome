@@ -21,7 +21,7 @@ Install the gem:
 
 ## Usage
 
-The command to execute is `psome`.  It takes a stream like this:
+The command to execute is `psome` (pronounced `p-some`, ryhmes with `roam`).  It takes a stream like this:
 
     cat file.csv | psome -f csv -e "puts datum[0]"
 
