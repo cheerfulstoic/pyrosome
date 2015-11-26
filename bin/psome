@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+VALID_FORMATS = %w(json csv)
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: example.rb [options]"
+
+  opts.on("-f", "--format [FORMAT]", "Format of input") do |f|
+    fail ArgumentError, "Invalid format: #{f}" unless VALID_FORMATS.include?(f.to_s)
+
+    options[:format] = f
+  end
+
+  opts.on("-e", "--exec [CODE]", "Ruby code to execute.  `datum` variable will be in scope") do |code|
+    fail ArgumentError, "No code specified" if code.nil? || code.empty?
+
+    options[:code] = code
+  end
+
+  opts.on('-h', "--headers", "Does the file have headers (if it is a tablular format)") do |headers|
+    options[:headers] = headers
+  end
+end.parse!
+
+
+case options[:format]
+when 'json'
+  require 'yajl'
+  Yajl::Parser.new.parse(STDIN).each do |datum|
+    eval(options[:code])
+  end
+when 'csv'
+  require 'csv'
+  CSV.new(STDIN, headers: options[:headers]).each do |datum|
+    eval(options[:code])
+  end
+end
