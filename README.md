@@ -23,9 +23,9 @@ Install the gem:
 
 The command to execute is `psome` (pronounced `p-some`, ryhmes with `roam`).  It takes a stream like this:
 
-    cat file.csv | psome -f csv -e "puts datum[0]"
+    cat file.csv | psome -f csv -e "puts _[0]"
 
-You can see that we specify the format that is expected and a bit of Ruby code which exects to use a `datum` variable
+You can see that we specify the format that is expected and a bit of Ruby code which exects to use a `_` variable
 
 ### Arguments
 
@@ -35,7 +35,7 @@ Specify a format.  `json` and `csv` currently supported
 
 #### -e [CODE] / --exec [CODE]
 
-Give some Ruby code to be executed.  A `datum` variable will be in scope and will represent the object which is retrieved for each iteration
+Give some Ruby code to be executed.  A `_` variable will be in scope and will represent the object which is retrieved for each iteration
 
 #### -h / --headers
 

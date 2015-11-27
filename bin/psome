@@ -23,18 +23,31 @@ OptionParser.new do |opts|
   opts.on('-h', "--headers", "Does the file have headers (if it is a tablular format)") do |headers|
     options[:headers] = headers
   end
+
+  opts.on('-p', '--print', "Prints the result of the evaluated code") do |print|
+    options[:print] = print
+  end
 end.parse!
 
+def process_datum(_, options)
+  datum = _
+
+  eval(options[:code]).tap do |result|
+    if options[:print]
+      puts result
+    end
+  end
+end
 
 case options[:format]
 when 'json'
   require 'yajl'
   Yajl::Parser.new.parse(STDIN).each do |datum|
-    eval(options[:code])
+    process_datum(datum, options)
   end
 when 'csv'
   require 'csv'
   CSV.new(STDIN, headers: options[:headers]).each do |datum|
-    eval(options[:code])
+    process_datum(datum, options)
   end
 end
