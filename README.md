@@ -1,5 +1,9 @@
 # Pyrosome
 
+![Pyrosome Rider](pyrosome_ride.jpg)
+
+Photo via [Mr Roger Fenwick](http://www.biodiversityexplorer.org/mm/tunicates/pyrostremma_spinosum.htm)
+
 "Pyrosomes, genus Pyrosoma, are free-floating colonial tunicates that live usually in the upper layers of the open ocean in warm seas, although some may be found at greater depths. Pyrosomes are cylindrical- or conical-shaped colonies made up of hundreds to thousands of individuals, known as zooids. Colonies range in size from less than one centimeter to several metres in length."
 
 Like Pyrosomes, files are made up of many individual pieces.  The UNIX philosophy encorages operating on streams of data and Ruby embraces this in part with command line options such as `-n` and `-e` so that you can process a stream of data by specifying a Ruby script from the command line which works with a single piece of a file.  This gem aims to provide the same functionality for more complex datasets such as JSON, CSV, XLS, etc...
