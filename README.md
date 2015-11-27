@@ -47,7 +47,7 @@ Specify that parallel processing is used via separate processes and specify how 
 
 ## TODOs
 
-By default process lines like Ruby
+By default process lines like Ruby (so that people can use `psome` for everything without switching back and forth and so that they can take advantage of parallel processing and any other convenience features)
 
 Parallel option
  * Threads or forks
