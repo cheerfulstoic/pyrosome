@@ -41,6 +41,10 @@ Give some Ruby code to be executed.  A `_` variable will be in scope and will re
 
 If the data is tabular, should we expect headers?
 
+#### -f / --forks [FORK_COUNT]
+
+Specify that parallel processing is used via separate processes and specify how many processes to use
+
 ## TODOs
 
 By default process lines like Ruby
