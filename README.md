@@ -41,6 +41,32 @@ Give some Ruby code to be executed.  A `_` variable will be in scope and will re
 
 If the data is tabular, should we expect headers?
 
+## TODOs
+
+Parallel option
+ * Threads or forks
+ * Way to do mutex (`sync` method?)
+
+-i to do in place replacement of files
+
+Support file names as arguments.
+
+Support file name for code execution instead of -e?  Could files have both `_` and `ARGV` in scope so that scripts not made for pyrosome be used?
+
+Flag to echo sample of what you would get with the specified options (do I get an array or a hash?  Does the hash have keys?)
+
+Support for colors?
+
+Support for different enumerators?  Sort_by comes to mind, but that wouldn't work for streaming (or would it?). Select/reject.  Does any?/all? make sense?
+
+Support for loading an app environment (automatically load Rails if inside a project to get models?)
+
+Easy generation of CSV / JSON from Ruby data?
+
+Some way to load libraries?
+
+Refer to https://robm.me.uk/ruby/2015/10/31/dollar-underscore.html
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/pyrosome. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
