@@ -8,10 +8,10 @@ options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: example.rb [options]"
 
-  opts.on("-f", "--format [FORMAT]", "Format of input") do |f|
-    fail ArgumentError, "Invalid format: #{f}" unless VALID_FORMATS.include?(f.to_s)
+  opts.on("-i", "--input [FORMAT]", "Format of input (#{VALID_FORMATS.inspect})") do |i|
+    fail ArgumentError, "Invalid input format: #{i}" unless VALID_FORMATS.include?(i.to_s)
 
-    options[:format] = f
+    options[:input] = i
   end
 
   opts.on("-e", "--exec [CODE]", "Ruby code to execute.  `datum` variable will be in scope") do |code|
@@ -27,6 +27,12 @@ OptionParser.new do |opts|
   opts.on('-p', '--print', "Prints the result of the evaluated code") do |print|
     options[:print] = print
   end
+
+  opts.on('-f', '--forks [FORK_COUNT]', "Number of forks to use (parallel mode)") do |forks|
+    fail ArgumentError, "Invalid argument for fork count: #{forks.inspect}" if !forks.match(/^\d+$/)
+
+    options[:forks] = forks.to_i
+  end
 end.parse!
 
 def process_datum(_, options)
@@ -39,15 +45,30 @@ def process_datum(_, options)
   end
 end
 
-case options[:format]
-when 'json'
-  require 'yajl'
-  Yajl::Parser.new.parse(STDIN).each do |datum|
-    process_datum(datum, options)
-  end
-when 'csv'
-  require 'csv'
-  CSV.new(STDIN, headers: options[:headers]).each do |datum|
-    process_datum(datum, options)
+def iterate(stream, options)
+  iterator = case options[:input]
+             when 'json'
+               require 'yajl'
+               Yajl::Parser.new.parse(STDIN)
+             when 'csv'
+               require 'csv'
+               CSV.new(STDIN, headers: options[:headers])
+             end
+
+  if options[:forks]
+    puts 'parallel!'
+    require 'parallel'
+    puts 'parallel?'
+    puts 'iterator.shift', iterator.shift.inspect
+    Parallel.each(lambda { iterator.shift || Parallel::Stop }, in_processes: options[:forks]) do |datum|
+      process_datum datum, options
+    end
+  else
+    iterator.each do |datum|
+      process_datum datum, options
+    end
   end
 end
+
+iterate(STDIN, options)
+

@@ -23,15 +23,15 @@ Install the gem:
 
 The command to execute is `psome` (pronounced `p-some`, ryhmes with `roam`).  It takes a stream like this:
 
-    cat file.csv | psome -f csv -e "puts _[0]"
+    cat file.csv | psome -i csv -e "puts _[0]"
 
 You can see that we specify the format that is expected and a bit of Ruby code which exects to use a `_` variable
 
 ### Arguments
 
-#### -f [FORMAT] / --format [FORMAT]
+#### -i [FORMAT] / --input [FORMAT]
 
-Specify a format.  `json` and `csv` currently supported
+Specify a input.  `json` and `csv` currently supported
 
 #### -e [CODE] / --exec [CODE]
 
@@ -42,6 +42,8 @@ Give some Ruby code to be executed.  A `_` variable will be in scope and will re
 If the data is tabular, should we expect headers?
 
 ## TODOs
+
+By default process lines like Ruby
 
 Parallel option
  * Threads or forks
