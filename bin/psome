@@ -8,7 +8,7 @@ VALID_FORMATS = %w(json csv)
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: example.rb [options]"
+  opts.banner = "Usage: psome [options...] [script_name]"
 
   opts.on("-i", "--input [FORMAT]", "Format of input (#{VALID_FORMATS.inspect})") do |i|
     fail ArgumentError, "Invalid input format: #{i}" unless VALID_FORMATS.include?(i.to_s)
@@ -48,11 +48,17 @@ OptionParser.new do |opts|
 end.parse!
 
 def process_datum(_, options)
-  datum = _
+  code = if options[:code]
+           options[:code]
+         elsif ARGV[0]
+           "_ = #{_.inspect}; " + File.read(ARGV[0])
+         else
+           fail ArgumentError, 'Either the `-e`/`--exec` flag or a script should be specified'
+         end
 
-  eval(options[:code]).tap do |result|
-    puts result if options[:print]
-  end
+  result = eval(code)
+
+  puts result if options[:print]
 end
 
 PARALLEL_MODE = options[:forks] || options[:threads]

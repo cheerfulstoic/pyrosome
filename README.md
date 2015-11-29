@@ -25,11 +25,15 @@ Install the gem:
 
 ## Usage
 
+    psome [options...] script_name
+
 The command to execute is `psome` (pronounced `p-some`, ryhmes with `roam`).  It takes a stream like this:
 
     cat file.csv | psome -i csv -e "puts _[0]"
 
-You can see that we specify the format that is expected and a bit of Ruby code which exects to use a `_` variable
+    cat file.csv | psome -i csv script.rb
+
+You can see that we specify the format that is expected and a bit of Ruby code which exects to use a `_` variable.  You can specify a Ruby script for re-usablility of code.  The `_` variable will be available in your Ruby script as well.
 
 ### Arguments
 
