@@ -39,7 +39,7 @@ You can see that we specify the format that is expected and a bit of Ruby code w
 
 #### -i [FORMAT] / --input [FORMAT]
 
-Specify a input.  `json` and `csv` currently supported
+Specify a input.  `json` and `csv` currently supported.  If this flag isn't specified then each line of the input will be given, similar to Ruby's `-n` flag
 
 #### -e [CODE] / --exec [CODE]
 
@@ -71,19 +71,13 @@ some_unix_commands | psome -f4 -i csv -e "name, age = _[0], _[1].to_i; sync { pu
 
 ## TODOs
 
-By default process lines like Ruby (so that people can use `psome` for everything without switching back and forth and so that they can take advantage of parallel processing and any other convenience features)
-
--i to do in place replacement of files
-
-Support file names as arguments.
-
-Support file name for code execution instead of -e?  Could files have both `_` and `ARGV` in scope so that scripts not made for pyrosome be used?
+Something like -i to do in place replacement of files?
 
 Flag to echo sample of what you would get with the specified options (do I get an array or a hash?  Does the hash have keys?)
 
 Support for colors?
 
-Support for different enumerators?  Sort_by comes to mind, but that wouldn't work for streaming (or would it?). Select/reject.  Does any?/all? make sense?
+Support for different enumerators (select/reject particularly)?  #sort_by probably wouldn't work for streaming
 
 Support for loading an app environment (automatically load Rails if inside a project to get models?)
 
