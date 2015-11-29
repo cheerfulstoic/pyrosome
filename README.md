@@ -49,13 +49,25 @@ If the data is tabular, should we expect headers?
 
 Specify that parallel processing is used via separate processes and specify how many processes to use
 
+#### -t / --threads [THREAD_COUNT]
+
+Specify that parallel processing is used via separate threads and specify how many threads to use
+
+### Methods
+
+#### ``sync``
+
+If you are running in parallel mode you can call the `sync` method within your code to run part of it synchronously.  This is particularly useful for having multiple threads/processes coordinate to write output, even if you don't care what order they do it in.  If you specify that threads are to be used then the Ruby `Mutex` will do the synchronization, while for forks a temporary file with be created to `flock` to.
+
+**Example:**
+
+# Convert CSV to JSON:
+
+some_unix_commands | psome -f4 -i csv -e "name, age = _[0], _[1].to_i; sync { puts({name: name, age: age}.to_json + ',') }"
+
 ## TODOs
 
 By default process lines like Ruby (so that people can use `psome` for everything without switching back and forth and so that they can take advantage of parallel processing and any other convenience features)
-
-Parallel option
- * Threads or forks
- * Way to do mutex (`sync` method?)
 
 -i to do in place replacement of files
 

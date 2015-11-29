@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require 'json'
+require 'csv'
 
 VALID_FORMATS = %w(json csv)
 
@@ -31,7 +33,17 @@ OptionParser.new do |opts|
   opts.on('-f', '--forks [FORK_COUNT]', "Number of forks to use (parallel mode)") do |forks|
     fail ArgumentError, "Invalid argument for fork count: #{forks.inspect}" if !forks.match(/^\d+$/)
 
+    fail ArgumentError, 'Cannot specify both fork and thread counts at the same time' if options[:threads]
+
     options[:forks] = forks.to_i
+  end
+
+  opts.on('-t', '--threads [THREAD_COUNT]', "Number of threads to use (parallel mode)") do |threads|
+    fail ArgumentError, "Invalid argument for thread count: #{threads.inspect}" if !threads.match(/^\d+$/)
+
+    fail ArgumentError, 'Cannot specify both fork and thread counts at the same time' if options[:forks]
+
+    options[:threads] = threads.to_i
   end
 end.parse!
 
@@ -39,10 +51,40 @@ def process_datum(_, options)
   datum = _
 
   eval(options[:code]).tap do |result|
-    if options[:print]
-      puts result
-    end
+    puts result if options[:print]
   end
+end
+
+PARALLEL_MODE = options[:forks] || options[:threads]
+
+if PARALLEL_MODE
+  if options[:forks]
+    require 'tempfile'
+    LOCK_FILE_PATH = Tempfile.new('pyrosome_mutex_lockfile').path
+  else
+    MUTEX = Mutex.new
+  end
+
+  # Forks can't use Mutex
+  def sync_with_flock(&block)
+    fail ArgumentError, "No block specified" if block.nil?
+
+    file = File.open(LOCK_FILE_PATH)
+    file.flock(File::LOCK_EX)
+    block.call
+  ensure
+    file.flock(File::LOCK_UN)
+    file.close
+  end
+
+  def sync_with_mutex(&block)
+    fail ArgumentError, "No block specified" if block.nil?
+
+    MUTEX.synchronize { block.call }
+  end
+
+  sync_method_name = options[:forks] ? :sync_with_flock : :sync_with_mutex
+  define_method(:sync, method(sync_method_name))
 end
 
 def iterate(stream, options)
@@ -51,16 +93,14 @@ def iterate(stream, options)
                require 'yajl'
                Yajl::Parser.new.parse(STDIN)
              when 'csv'
-               require 'csv'
                CSV.new(STDIN, headers: options[:headers])
              end
 
-  if options[:forks]
-    puts 'parallel!'
+  if PARALLEL_MODE
     require 'parallel'
-    puts 'parallel?'
-    puts 'iterator.shift', iterator.shift.inspect
-    Parallel.each(lambda { iterator.shift || Parallel::Stop }, in_processes: options[:forks]) do |datum|
+    parallel_key = options[:forks] ? :in_processes : :in_threads
+
+    Parallel.each(lambda { iterator.shift || Parallel::Stop }, parallel_key => options[:forks]) do |datum|
       process_datum datum, options
     end
   else
