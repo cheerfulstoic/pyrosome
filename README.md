@@ -65,7 +65,7 @@ If you are running in parallel mode you can call the `sync` method within your c
 
 **Example:**
 
-# Convert CSV to JSON:
+    # Convert CSV to JSON:
 
     some_unix_commands | psome -f4 -i csv -e "name, age = _[0], _[1].to_i; sync { puts({name: name, age: age}.to_json + ',') }"
 
