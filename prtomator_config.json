@@ -1,0 +1,5 @@
+{
+  "file_changes": {
+    "db/neo4j/migrations/": "pr_comments/migration_checklist.md"
+  }
+}
