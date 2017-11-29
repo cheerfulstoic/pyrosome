@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This file should follow the standards specified on [http://keepachangelog.com/]
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 11-28-2017
+
+### Changed
+
+- Update `yajl-ruby` dependency version
+
 ## [0.3.0] - 11-27-2015
 
 ### Changed
